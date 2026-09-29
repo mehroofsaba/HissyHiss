@@ -1,0 +1,3384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Snake Arcade · Pixel Edition</title>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      :root {
+        --theme-bg: #1a1a2e;
+        --theme-panel: #16213e;
+        --theme-canvas: #0f0f1a;
+        --theme-grid: #2a2a4a;
+        --theme-accent: #9bb8d3;
+        --theme-accent2: #8b5f9e;
+        --theme-snake-head: #cc6e8c;
+        --theme-snake-body: #d89ba8;
+        --theme-snake-tail: #c4849a;
+        --theme-food: #f7e9c3;
+        --theme-text: #e2e8f0;
+        --theme-text-muted: #8b7a99;
+        --theme-btn: #cc6e8c;
+        --theme-btn-shadow: #8b4a6a;
+        --theme-btn-hover: #d88ba0;
+        --theme-border: #8b5f9e;
+        --theme-success: #4ade80;
+        --theme-danger: #ef4444;
+        --theme-glow: #9bb8d3;
+      }
+
+      [data-theme="noir"] {
+        --theme-bg: #0a0a0a;
+        --theme-panel: #141414;
+        --theme-canvas: #050505;
+        --theme-grid: #1f1f1f;
+        --theme-accent: #888888;
+        --theme-accent2: #666666;
+        --theme-snake-head: #ffffff;
+        --theme-snake-body: #cccccc;
+        --theme-snake-tail: #999999;
+        --theme-food: #ffdd44;
+        --theme-text: #f0f0f0;
+        --theme-text-muted: #666666;
+        --theme-btn: #444444;
+        --theme-btn-shadow: #222222;
+        --theme-btn-hover: #555555;
+        --theme-border: #333333;
+        --theme-glow: #ffffff;
+      }
+
+      [data-theme="berry"] {
+        --theme-bg: #2d1b2e;
+        --theme-panel: #3d1f3e;
+        --theme-canvas: #1a0f1a;
+        --theme-grid: #4a2a4a;
+        --theme-accent: #e879a8;
+        --theme-accent2: #a84578;
+        --theme-snake-head: #ff6b9d;
+        --theme-snake-body: #e84578;
+        --theme-snake-tail: #c4356a;
+        --theme-food: #ffd93d;
+        --theme-text: #ffe0f0;
+        --theme-text-muted: #a87898;
+        --theme-btn: #e84578;
+        --theme-btn-shadow: #8b2a4a;
+        --theme-btn-hover: #ff6b9d;
+        --theme-border: #a84578;
+        --theme-glow: #ff6b9d;
+      }
+
+      [data-theme="aqua"] {
+        --theme-bg: #0a1f2e;
+        --theme-panel: #0f2a3e;
+        --theme-canvas: #061520;
+        --theme-grid: #1a3a4a;
+        --theme-accent: #4ade80;
+        --theme-accent2: #22d3ee;
+        --theme-snake-head: #22d3ee;
+        --theme-snake-body: #06b6d4;
+        --theme-snake-tail: #0891b2;
+        --theme-food: #fbbf24;
+        --theme-text: #e0f7ff;
+        --theme-text-muted: #5a8a9a;
+        --theme-btn: #06b6d4;
+        --theme-btn-shadow: #0e7490;
+        --theme-btn-hover: #22d3ee;
+        --theme-border: #0891b2;
+        --theme-glow: #22d3ee;
+      }
+
+      [data-theme="garden"] {
+        --theme-bg: #1a2e1a;
+        --theme-panel: #1f3e1f;
+        --theme-canvas: #0f1a0f;
+        --theme-grid: #2a4a2a;
+        --theme-accent: #86efac;
+        --theme-accent2: #4ade80;
+        --theme-snake-head: #4ade80;
+        --theme-snake-body: #22c55e;
+        --theme-snake-tail: #16a34a;
+        --theme-food: #fbbf24;
+        --theme-text: #e0ffe0;
+        --theme-text-muted: #6a8a6a;
+        --theme-btn: #22c55e;
+        --theme-btn-shadow: #15803d;
+        --theme-btn-hover: #4ade80;
+        --theme-border: #16a34a;
+        --theme-glow: #4ade80;
+      }
+
+      [data-theme="cosmic"] {
+        --theme-bg: #1a0a2e;
+        --theme-panel: #2a0f3e;
+        --theme-canvas: #0f051a;
+        --theme-grid: #3a1a4a;
+        --theme-accent: #c084fc;
+        --theme-accent2: #a855f7;
+        --theme-snake-head: #e879f9;
+        --theme-snake-body: #c084fc;
+        --theme-snake-tail: #a855f7;
+        --theme-food: #fbbf24;
+        --theme-text: #f0e0ff;
+        --theme-text-muted: #8a6a9a;
+        --theme-btn: #a855f7;
+        --theme-btn-shadow: #6b21a8;
+        --theme-btn-hover: #c084fc;
+        --theme-border: #a855f7;
+        --theme-glow: #c084fc;
+      }
+
+      [data-theme="arcade"] {
+        --theme-bg: #0a0a2e;
+        --theme-panel: #0f0f3e;
+        --theme-canvas: #05051a;
+        --theme-grid: #1a1a4a;
+        --theme-accent: #fbbf24;
+        --theme-accent2: #f59e0b;
+        --theme-snake-head: #fbbf24;
+        --theme-snake-body: #f59e0b;
+        --theme-snake-tail: #d97706;
+        --theme-food: #4ade80;
+        --theme-text: #fff7e0;
+        --theme-text-muted: #8a7a5a;
+        --theme-btn: #f59e0b;
+        --theme-btn-shadow: #b45309;
+        --theme-btn-hover: #fbbf24;
+        --theme-border: #f59e0b;
+        --theme-glow: #fbbf24;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        overscroll-behavior: none;
+        touch-action: none;
+      }
+
+      body {
+        background: var(--theme-bg);
+        background-image:
+          linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.02) 25%,
+            transparent 25%
+          ),
+          linear-gradient(
+            -45deg,
+            rgba(255, 255, 255, 0.02) 25%,
+            transparent 25%
+          ),
+          linear-gradient(
+            45deg,
+            transparent 75%,
+            rgba(255, 255, 255, 0.02) 75%
+          ),
+          linear-gradient(
+            -45deg,
+            transparent 75%,
+            rgba(255, 255, 255, 0.02) 75%
+          );
+        background-size: 20px 20px;
+        background-position:
+          0 0,
+          0 10px,
+          10px -10px,
+          -10px 0px;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Courier New", "Consolas", monospace;
+        image-rendering: pixelated;
+        color: var(--theme-text);
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+        transition: background-color 0.3s ease;
+      }
+
+      #root {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: clamp(4px, 1.5vw, 16px);
+      }
+
+      .game-container {
+        background: var(--theme-panel);
+        padding: clamp(8px, 1.5vw, 20px);
+        border-radius: 0;
+        box-shadow:
+          0 0 0 4px var(--theme-border),
+          6px 6px 0 0 rgba(0, 0, 0, 0.5),
+          0 0 30px rgba(155, 184, 211, 0.15);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 3px solid var(--theme-border);
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+        width: fit-content;
+        height: fit-content;
+        gap: clamp(6px, 1vw, 12px);
+        transition: box-shadow 0.3s ease;
+      }
+
+      .game-container::before {
+        content: "";
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        width: 10px;
+        height: 10px;
+        background: var(--theme-accent);
+        box-shadow:
+          calc(100% + 3px - 10px) 0 0 var(--theme-accent),
+          0 calc(100% + 3px - 10px) 0 var(--theme-accent),
+          calc(100% + 3px - 10px) calc(100% + 3px - 10px) 0 var(--theme-accent);
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(10px, 2vw, 18px);
+        width: 100%;
+        max-width: 500px;
+        padding: clamp(8px, 2vw, 20px);
+        animation: screenIn 0.3s ease;
+      }
+
+      @keyframes screenIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .screen-title {
+        font-size: clamp(1.4rem, 5vw, 2.2rem);
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: var(--theme-accent);
+        text-shadow:
+          3px 3px 0 var(--theme-btn-shadow),
+          0 0 20px var(--theme-glow);
+        text-transform: uppercase;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 4px;
+      }
+
+      .menu-btn {
+        background: var(--theme-panel);
+        border: 3px solid var(--theme-border);
+        color: var(--theme-text);
+        font-family: "Courier New", monospace;
+        font-weight: 700;
+        font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+        letter-spacing: 2px;
+        padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 40px);
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow:
+          5px 5px 0 0 var(--theme-btn-shadow),
+          inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+        transition: all 0.08s linear;
+        width: 100%;
+        max-width: 320px;
+        text-align: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .menu-btn:hover {
+        background: var(--theme-accent2);
+        border-color: var(--theme-accent);
+        transform: translate(-1px, -1px);
+        box-shadow:
+          6px 6px 0 0 var(--theme-btn-shadow),
+          inset 0 0 0 2px rgba(255, 255, 255, 0.2),
+          0 0 15px var(--theme-glow);
+      }
+
+      .menu-btn:active {
+        transform: translate(3px, 3px);
+        box-shadow:
+          2px 2px 0 0 var(--theme-btn-shadow),
+          inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+
+      .menu-btn.primary {
+        background: var(--theme-btn);
+        color: white;
+        border-color: var(--theme-accent);
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        padding: clamp(14px, 2.5vw, 20px) clamp(24px, 5vw, 50px);
+        box-shadow:
+          6px 6px 0 0 var(--theme-btn-shadow),
+          inset 0 0 0 2px rgba(255, 255, 255, 0.3),
+          0 0 25px var(--theme-glow);
+        animation: pulseGlow 2.5s ease-in-out infinite;
+      }
+
+      .menu-btn.primary:hover {
+        background: var(--theme-btn-hover);
+        transform: translate(-2px, -2px) scale(1.02);
+        box-shadow:
+          8px 8px 0 0 var(--theme-btn-shadow),
+          inset 0 0 0 2px rgba(255, 255, 255, 0.4),
+          0 0 35px var(--theme-glow);
+      }
+
+      @keyframes pulseGlow {
+        0%,
+        100% {
+          box-shadow:
+            6px 6px 0 0 var(--theme-btn-shadow),
+            inset 0 0 0 2px rgba(255, 255, 255, 0.3),
+            0 0 20px var(--theme-glow);
+        }
+        50% {
+          box-shadow:
+            6px 6px 0 0 var(--theme-btn-shadow),
+            inset 0 0 0 2px rgba(255, 255, 255, 0.3),
+            0 0 35px var(--theme-glow);
+        }
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        max-width: 320px;
+      }
+      .btn-row .menu-btn {
+        flex: 1;
+        padding: clamp(8px, 1.5vw, 12px) clamp(8px, 1.5vw, 16px);
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+      }
+
+      .hud {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: clamp(4px, 0.8vw, 8px);
+        width: 100%;
+      }
+
+      .hud-panel {
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        padding: clamp(4px, 1vw, 8px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        box-shadow:
+          3px 3px 0 0 var(--theme-btn-shadow),
+          inset 0 0 10px rgba(0, 0, 0, 0.3);
+        min-width: 0;
+      }
+
+      .hud-label {
+        font-size: clamp(0.55rem, 1.3vw, 0.7rem);
+        color: var(--theme-text-muted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .hud-value {
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        font-weight: 700;
+        color: var(--theme-accent);
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .hud-value.gold {
+        color: var(--theme-food);
+      }
+      .hud-value.pink {
+        color: var(--theme-snake-head);
+      }
+
+      .combo-display {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: clamp(1.5rem, 6vw, 3rem);
+        font-weight: 700;
+        color: var(--theme-food);
+        text-shadow:
+          4px 4px 0 var(--theme-btn-shadow),
+          0 0 30px var(--theme-glow);
+        letter-spacing: 3px;
+        pointer-events: none;
+        z-index: 100;
+        opacity: 0;
+        text-transform: uppercase;
+      }
+
+      .canvas-wrapper {
+        background: var(--theme-canvas);
+        padding: clamp(4px, 0.8vw, 8px);
+        box-shadow:
+          0 0 0 3px var(--theme-border),
+          inset 0 0 30px rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid var(--theme-grid);
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      canvas {
+        display: block;
+        background: var(--theme-canvas);
+        box-shadow: 0 0 0 2px var(--theme-grid);
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        touch-action: none;
+      }
+
+      .progress-container {
+        width: 100%;
+        height: clamp(6px, 1.2vw, 10px);
+        background: var(--theme-canvas);
+        box-shadow: inset 0 0 0 2px var(--theme-border);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--theme-accent2),
+          var(--theme-food)
+        );
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px var(--theme-glow);
+      }
+
+      .start-screen .logo {
+        font-size: clamp(2rem, 8vw, 3.5rem);
+        font-weight: 700;
+        letter-spacing: 5px;
+        color: var(--theme-snake-head);
+        text-shadow:
+          4px 4px 0 var(--theme-btn-shadow),
+          0 0 30px var(--theme-glow);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        animation: logoFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes logoFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .mode-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: clamp(6px, 1.2vw, 10px);
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .mode-card {
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        padding: clamp(10px, 1.8vw, 16px) clamp(6px, 1vw, 10px);
+        cursor: pointer;
+        text-align: center;
+        box-shadow: 4px 4px 0 0 var(--theme-btn-shadow);
+        transition: all 0.1s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .mode-card:hover {
+        background: var(--theme-panel);
+        border-color: var(--theme-accent);
+        transform: translate(-1px, -1px);
+        box-shadow:
+          5px 5px 0 0 var(--theme-btn-shadow),
+          0 0 15px var(--theme-glow);
+      }
+
+      .mode-card:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 0 var(--theme-btn-shadow);
+      }
+      .mode-card.selected {
+        border-color: var(--theme-food);
+        background: var(--theme-panel);
+        box-shadow:
+          4px 4px 0 0 var(--theme-btn-shadow),
+          0 0 20px var(--theme-food);
+      }
+
+      .mode-name {
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        font-weight: 700;
+        color: var(--theme-accent);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 400px;
+        padding: clamp(6px, 1.2vw, 10px);
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        gap: 10px;
+      }
+
+      .settings-label {
+        font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+        color: var(--theme-text);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .toggle {
+        width: 50px;
+        height: 24px;
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        position: relative;
+        cursor: pointer;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+
+      .toggle.on {
+        background: var(--theme-accent2);
+        border-color: var(--theme-accent);
+      }
+
+      .toggle::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background: var(--theme-text);
+        transition: transform 0.2s;
+      }
+
+      .toggle.on::after {
+        transform: translateX(26px);
+        background: var(--theme-food);
+      }
+
+      .theme-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .theme-swatch {
+        aspect-ratio: 1;
+        border: 3px solid var(--theme-border);
+        cursor: pointer;
+        position: relative;
+        box-shadow: 3px 3px 0 0 var(--theme-btn-shadow);
+        transition: all 0.1s;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 4px;
+      }
+
+      .theme-swatch:hover {
+        transform: translate(-1px, -1px);
+        box-shadow:
+          4px 4px 0 0 var(--theme-btn-shadow),
+          0 0 15px currentColor;
+      }
+      .theme-swatch.selected {
+        border-color: var(--theme-food);
+        box-shadow:
+          3px 3px 0 0 var(--theme-btn-shadow),
+          0 0 20px var(--theme-food);
+      }
+
+      .theme-swatch .swatch-name {
+        font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+        color: white;
+        text-shadow: 1px 1px 2px black;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .game-over-screen .big-score {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        font-weight: 700;
+        color: var(--theme-food);
+        text-shadow:
+          4px 4px 0 var(--theme-btn-shadow),
+          0 0 30px var(--theme-glow);
+        letter-spacing: 3px;
+      }
+
+      .game-over-screen .stat-row {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .game-over-screen .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .game-over-screen .stat-label {
+        font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+        color: var(--theme-text-muted);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .game-over-screen .stat-value {
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        font-weight: 700;
+        color: var(--theme-accent);
+      }
+
+      .new-record {
+        font-size: clamp(1rem, 3vw, 1.4rem);
+        font-weight: 700;
+        color: var(--theme-food);
+        text-shadow: 0 0 20px var(--theme-food);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        animation: recordPulse 1s ease-in-out infinite;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      @keyframes recordPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.08);
+          opacity: 0.9;
+        }
+      }
+
+      .pause-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 26, 0.85);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        z-index: 50;
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.2s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .pause-title {
+        font-size: clamp(1.5rem, 5vw, 2.2rem);
+        font-weight: 700;
+        color: var(--theme-accent);
+        letter-spacing: 4px;
+        text-shadow:
+          3px 3px 0 var(--theme-btn-shadow),
+          0 0 20px var(--theme-glow);
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .float-text {
+        position: absolute;
+        font-size: clamp(1rem, 3vw, 1.5rem);
+        font-weight: 700;
+        text-shadow: 2px 2px 0 var(--theme-btn-shadow);
+        pointer-events: none;
+        z-index: 100;
+        letter-spacing: 2px;
+        white-space: nowrap;
+      }
+
+      .achievement-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--theme-panel);
+        border: 3px solid var(--theme-food);
+        padding: 12px 20px;
+        box-shadow:
+          4px 4px 0 0 var(--theme-btn-shadow),
+          0 0 25px var(--theme-food);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: toastIn 0.4s ease;
+        max-width: 300px;
+      }
+
+      @keyframes toastIn {
+        from {
+          transform: translateX(120%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .achievement-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .achievement-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .achievement-title {
+        font-size: 0.75rem;
+        color: var(--theme-food);
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .achievement-name {
+        font-size: 0.85rem;
+        color: var(--theme-text);
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .scroll-panel {
+        width: 100%;
+        max-width: 500px;
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(6px, 1vw, 10px);
+        padding: 4px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--theme-accent) var(--theme-canvas);
+      }
+
+      .scroll-panel::-webkit-scrollbar {
+        width: 8px;
+      }
+      .scroll-panel::-webkit-scrollbar-track {
+        background: var(--theme-canvas);
+      }
+      .scroll-panel::-webkit-scrollbar-thumb {
+        background: var(--theme-accent);
+        border: 2px solid var(--theme-canvas);
+      }
+
+      .score-entry {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 16px);
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        box-shadow: 3px 3px 0 0 var(--theme-btn-shadow);
+        gap: 10px;
+      }
+
+      .score-rank {
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        font-weight: 700;
+        color: var(--theme-food);
+        min-width: 30px;
+      }
+      .score-name {
+        font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+        color: var(--theme-text);
+        letter-spacing: 1px;
+        flex: 1;
+      }
+      .score-points {
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        font-weight: 700;
+        color: var(--theme-accent);
+      }
+
+      .howto-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+        padding: clamp(8px, 1.5vw, 12px);
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        box-shadow: 3px 3px 0 0 var(--theme-btn-shadow);
+      }
+
+      .howto-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .howto-text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .howto-title {
+        font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+        font-weight: 700;
+        color: var(--theme-accent);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .howto-desc {
+        font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+        color: var(--theme-text-muted);
+        line-height: 1.4;
+      }
+
+      .dpad {
+        display: none;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 6px;
+        width: min(180px, 50vw);
+        aspect-ratio: 1;
+        margin-top: 8px;
+        user-select: none;
+      }
+
+      .dpad-btn {
+        background: var(--theme-canvas);
+        border: 2px solid var(--theme-border);
+        color: var(--theme-accent);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 0 var(--theme-btn-shadow);
+        touch-action: manipulation;
+        transition: all 0.05s;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .dpad-btn:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 0 var(--theme-btn-shadow);
+        background: var(--theme-btn);
+        color: var(--theme-food);
+      }
+
+      .dpad-btn.up {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .dpad-btn.left {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      .dpad-btn.down {
+        grid-column: 2;
+        grid-row: 3;
+      }
+      .dpad-btn.right {
+        grid-column: 3;
+        grid-row: 2;
+      }
+
+      @media (pointer: coarse) {
+        .dpad.visible {
+          display: grid;
+        }
+      }
+
+      .hint {
+        color: var(--theme-text-muted);
+        font-size: clamp(0.55rem, 1.3vw, 0.7rem);
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-family: "Courier New", monospace;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1.2;
+        flex-wrap: wrap;
+        padding: 0 8px;
+      }
+
+      .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.3em;
+        height: 1.3em;
+        vertical-align: middle;
+        color: currentColor;
+        flex-shrink: 0;
+      }
+
+      .icon svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        shape-rendering: crispEdges;
+      }
+      .icon-sm {
+        width: 1em;
+        height: 1em;
+      }
+      .icon-lg {
+        width: 1.8em;
+        height: 1.8em;
+      }
+      .icon-xl {
+        width: 2.4em;
+        height: 2.4em;
+      }
+
+      @media (max-height: 750px) {
+        .game-container {
+          gap: 6px;
+          padding: 10px;
+        }
+        .hud-panel {
+          padding: 4px 6px;
+        }
+      }
+
+      @media (orientation: landscape) and (max-height: 550px) {
+        .game-container {
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          max-width: 95vw;
+        }
+        .canvas-wrapper {
+          max-height: 75vh;
+        }
+        canvas {
+          max-height: 75vh;
+          width: auto;
+        }
+        .hud {
+          width: 100%;
+          max-width: 300px;
+        }
+        .scroll-panel {
+          max-height: 55vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+      // ============ COLORFUL PIXEL SVG ICONS ============
+
+      const Icons = {
+        Snake: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="14" width="4" height="4" fill="#D89BA8" />
+              <rect x="8" y="10" width="4" height="4" fill="#D89BA8" />
+              <rect x="12" y="10" width="4" height="4" fill="#D89BA8" />
+              <rect x="16" y="6" width="4" height="4" fill="#CC6E8C" />
+              <rect x="18" y="8" width="2" height="2" fill="#ffffff" />
+              <rect x="16" y="4" width="2" height="2" fill="#F7E9C3" />
+            </svg>
+          </span>
+        ),
+
+        Apple: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="6" y="9" width="12" height="11" fill="#e74c3c" />
+              <rect x="8" y="7" width="8" height="2" fill="#e74c3c" />
+              <rect x="7" y="10" width="2" height="2" fill="#ff6b6b" />
+              <rect x="12" y="4" width="2" height="3" fill="#5d4e37" />
+              <rect x="10" y="4" width="4" height="2" fill="#4ade80" />
+            </svg>
+          </span>
+        ),
+
+        Strawberry: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="7" y="10" width="10" height="10" fill="#e84393" />
+              <rect x="8" y="8" width="8" height="2" fill="#e84393" />
+              <rect x="5" y="11" width="2" height="6" fill="#e84393" />
+              <rect x="17" y="11" width="2" height="6" fill="#e84393" />
+              <rect x="10" y="13" width="1" height="1" fill="#ffd93d" />
+              <rect x="13" y="13" width="1" height="1" fill="#ffd93d" />
+              <rect x="11" y="16" width="1" height="1" fill="#ffd93d" />
+              <rect x="14" y="16" width="1" height="1" fill="#ffd93d" />
+              <rect x="10" y="4" width="4" height="3" fill="#4ade80" />
+              <rect x="12" y="3" width="2" height="1" fill="#22c55e" />
+            </svg>
+          </span>
+        ),
+
+        Cherry: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="13" width="6" height="7" fill="#c0392b" />
+              <rect x="5" y="11" width="4" height="2" fill="#c0392b" />
+              <rect x="14" y="13" width="6" height="7" fill="#e74c3c" />
+              <rect x="15" y="11" width="4" height="2" fill="#e74c3c" />
+              <rect x="6" y="14" width="1" height="1" fill="#ff6b6b" />
+              <rect x="16" y="14" width="1" height="1" fill="#ff8888" />
+              <rect x="7" y="4" width="2" height="7" fill="#4ade80" />
+              <rect x="15" y="5" width="2" height="6" fill="#22c55e" />
+            </svg>
+          </span>
+        ),
+
+        Star: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="4" fill="#fbbf24" />
+              <rect x="6" y="6" width="12" height="4" fill="#fbbf24" />
+              <rect x="4" y="10" width="16" height="4" fill="#fbbf24" />
+              <rect x="6" y="14" width="4" height="4" fill="#fbbf24" />
+              <rect x="14" y="14" width="4" height="4" fill="#fbbf24" />
+              <rect x="4" y="18" width="4" height="4" fill="#fbbf24" />
+              <rect x="16" y="18" width="4" height="4" fill="#fbbf24" />
+              <rect x="11" y="7" width="2" height="2" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        Lightning: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="12" y="2" width="5" height="4" fill="#fbbf24" />
+              <rect x="10" y="6" width="5" height="4" fill="#fbbf24" />
+              <rect x="5" y="10" width="11" height="4" fill="#f59e0b" />
+              <rect x="8" y="14" width="5" height="4" fill="#fbbf24" />
+              <rect x="10" y="18" width="5" height="4" fill="#fbbf24" />
+              <rect x="13" y="3" width="2" height="2" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        Snowflake: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="20" fill="#22d3ee" />
+              <rect x="2" y="10" width="20" height="4" fill="#22d3ee" />
+              <rect x="6" y="6" width="3" height="3" fill="#67e8f9" />
+              <rect x="15" y="6" width="3" height="3" fill="#67e8f9" />
+              <rect x="6" y="15" width="3" height="3" fill="#67e8f9" />
+              <rect x="15" y="15" width="3" height="3" fill="#67e8f9" />
+            </svg>
+          </span>
+        ),
+
+        Crystal: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="8" y="3" width="8" height="4" fill="#c084fc" />
+              <rect x="6" y="7" width="12" height="4" fill="#a855f7" />
+              <rect x="4" y="11" width="16" height="4" fill="#9333ea" />
+              <rect x="6" y="15" width="12" height="4" fill="#a855f7" />
+              <rect x="8" y="19" width="8" height="3" fill="#c084fc" />
+              <rect x="10" y="5" width="2" height="2" fill="#e9d5ff" />
+              <rect x="9" y="9" width="2" height="2" fill="#e9d5ff" />
+            </svg>
+          </span>
+        ),
+
+        Skull: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="6" y="4" width="12" height="14" fill="#e2e8f0" />
+              <rect x="8" y="6" width="3" height="3" fill="#1a1a2e" />
+              <rect x="13" y="6" width="3" height="3" fill="#1a1a2e" />
+              <rect x="9" y="12" width="6" height="2" fill="#1a1a2e" />
+              <rect x="6" y="18" width="4" height="3" fill="#e2e8f0" />
+              <rect x="14" y="18" width="4" height="3" fill="#e2e8f0" />
+              <rect x="10" y="3" width="4" height="1" fill="#ffffff" />
+            </svg>
+          </span>
+        ),
+
+        Pause: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="6" y="4" width="5" height="16" fill="#9BB8D3" />
+              <rect x="13" y="4" width="5" height="16" fill="#9BB8D3" />
+              <rect x="7" y="5" width="2" height="14" fill="#c7ddf0" />
+              <rect x="14" y="5" width="2" height="14" fill="#c7ddf0" />
+            </svg>
+          </span>
+        ),
+
+        Play: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="6" y="4" width="4" height="16" fill="#4ade80" />
+              <rect x="10" y="6" width="4" height="12" fill="#22c55e" />
+              <rect x="14" y="8" width="4" height="8" fill="#16a34a" />
+              <rect x="7" y="6" width="2" height="3" fill="#86efac" />
+            </svg>
+          </span>
+        ),
+
+        Refresh: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="4" width="16" height="4" fill="#9BB8D3" />
+              <rect x="6" y="8" width="4" height="12" fill="#9BB8D3" />
+              <rect x="14" y="8" width="4" height="12" fill="#9BB8D3" />
+              <rect x="10" y="12" width="4" height="4" fill="#CC6E8C" />
+            </svg>
+          </span>
+        ),
+
+        Trophy: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="6" y="2" width="12" height="8" fill="#fbbf24" />
+              <rect x="4" y="4" width="2" height="6" fill="#f59e0b" />
+              <rect x="18" y="4" width="2" height="6" fill="#f59e0b" />
+              <rect x="8" y="10" width="8" height="4" fill="#fbbf24" />
+              <rect x="10" y="14" width="4" height="4" fill="#d97706" />
+              <rect x="6" y="18" width="12" height="4" fill="#fbbf24" />
+              <rect x="8" y="3" width="2" height="2" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        Gear: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="4" fill="#9BB8D3" />
+              <rect x="10" y="18" width="4" height="4" fill="#9BB8D3" />
+              <rect x="2" y="10" width="4" height="4" fill="#9BB8D3" />
+              <rect x="18" y="10" width="4" height="4" fill="#9BB8D3" />
+              <rect x="6" y="6" width="12" height="12" fill="#9BB8D3" />
+              <rect x="9" y="9" width="6" height="6" fill="#1a1a2e" />
+            </svg>
+          </span>
+        ),
+
+        Book: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="3" width="16" height="18" fill="#8B5F9E" />
+              <rect x="7" y="6" width="8" height="2" fill="#F7E9C3" />
+              <rect x="7" y="10" width="8" height="2" fill="#F7E9C3" />
+              <rect x="7" y="14" width="6" height="2" fill="#F7E9C3" />
+              <rect x="4" y="3" width="2" height="18" fill="#6b4a7a" />
+            </svg>
+          </span>
+        ),
+
+        Palette: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="4" width="16" height="16" fill="#F7E9C3" />
+              <rect x="7" y="7" width="3" height="3" fill="#CC6E8C" />
+              <rect x="14" y="7" width="3" height="3" fill="#8B5F9E" />
+              <rect x="7" y="14" width="3" height="3" fill="#4ade80" />
+              <rect x="14" y="14" width="3" height="3" fill="#fbbf24" />
+            </svg>
+          </span>
+        ),
+
+        Home: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="3" fill="#CC6E8C" />
+              <rect x="4" y="5" width="16" height="4" fill="#CC6E8C" />
+              <rect x="6" y="9" width="12" height="12" fill="#CC6E8C" />
+              <rect x="10" y="14" width="4" height="7" fill="#F7E9C3" />
+            </svg>
+          </span>
+        ),
+
+        Music: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="4" width="2" height="14" fill="#e879f9" />
+              <rect x="6" y="3" width="2" height="3" fill="#e879f9" />
+              <rect x="8" y="4" width="8" height="2" fill="#e879f9" />
+              <rect x="14" y="4" width="2" height="12" fill="#e879f9" />
+              <rect x="2" y="16" width="6" height="4" fill="#c084fc" />
+              <rect x="12" y="14" width="6" height="4" fill="#c084fc" />
+            </svg>
+          </span>
+        ),
+
+        Speaker: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="9" width="4" height="6" fill="#4ade80" />
+              <rect x="8" y="6" width="6" height="12" fill="#4ade80" />
+              <rect x="16" y="6" width="2" height="2" fill="#86efac" />
+              <rect x="18" y="8" width="2" height="2" fill="#86efac" />
+              <rect x="16" y="16" width="2" height="2" fill="#86efac" />
+              <rect x="18" y="14" width="2" height="2" fill="#86efac" />
+            </svg>
+          </span>
+        ),
+
+        Sparkle: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="4" fill="#fbbf24" />
+              <rect x="10" y="18" width="4" height="4" fill="#fbbf24" />
+              <rect x="2" y="10" width="4" height="4" fill="#fbbf24" />
+              <rect x="18" y="10" width="4" height="4" fill="#fbbf24" />
+              <rect x="10" y="10" width="4" height="4" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        Explosion: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="4" fill="#ef4444" />
+              <rect x="10" y="18" width="4" height="4" fill="#ef4444" />
+              <rect x="2" y="10" width="4" height="4" fill="#ef4444" />
+              <rect x="18" y="10" width="4" height="4" fill="#ef4444" />
+              <rect x="6" y="6" width="12" height="12" fill="#fbbf24" />
+              <rect x="10" y="10" width="4" height="4" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        Dpad: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="6" fill="#9BB8D3" />
+              <rect x="10" y="16" width="4" height="6" fill="#9BB8D3" />
+              <rect x="2" y="10" width="6" height="4" fill="#9BB8D3" />
+              <rect x="16" y="10" width="6" height="4" fill="#9BB8D3" />
+              <rect x="10" y="10" width="4" height="4" fill="#CC6E8C" />
+            </svg>
+          </span>
+        ),
+
+        Target: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="4" width="16" height="16" fill="#9BB8D3" />
+              <rect x="7" y="7" width="10" height="10" fill="#1a1a2e" />
+              <rect x="10" y="10" width="4" height="4" fill="#ef4444" />
+            </svg>
+          </span>
+        ),
+
+        Calendar: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="4" width="16" height="16" fill="#9BB8D3" />
+              <rect x="4" y="4" width="16" height="4" fill="#CC6E8C" />
+              <rect x="7" y="2" width="2" height="4" fill="#4a4a6a" />
+              <rect x="15" y="2" width="2" height="4" fill="#4a4a6a" />
+              <rect x="7" y="10" width="3" height="3" fill="#F7E9C3" />
+              <rect x="14" y="10" width="3" height="3" fill="#F7E9C3" />
+              <rect x="7" y="15" width="3" height="3" fill="#F7E9C3" />
+              <rect x="14" y="15" width="3" height="3" fill="#F7E9C3" />
+            </svg>
+          </span>
+        ),
+
+        Medal: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="8" y="2" width="8" height="3" fill="#CC6E8C" />
+              <rect x="6" y="5" width="12" height="3" fill="#e879a8" />
+              <rect x="4" y="8" width="16" height="10" fill="#fbbf24" />
+              <rect x="8" y="18" width="8" height="4" fill="#f59e0b" />
+              <rect x="10" y="11" width="4" height="4" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        Records: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="4" width="16" height="16" fill="#F7E9C3" />
+              <rect x="4" y="4" width="16" height="3" fill="#fbbf24" />
+              <rect x="7" y="9" width="10" height="2" fill="#8B5F9E" />
+              <rect x="7" y="13" width="10" height="2" fill="#8B5F9E" />
+              <rect x="7" y="17" width="6" height="2" fill="#8B5F9E" />
+            </svg>
+          </span>
+        ),
+
+        // Mode icons
+        ModeClassic: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="4" y="14" width="4" height="4" fill="#D89BA8" />
+              <rect x="8" y="10" width="4" height="4" fill="#D89BA8" />
+              <rect x="12" y="10" width="4" height="4" fill="#D89BA8" />
+              <rect x="16" y="6" width="4" height="4" fill="#CC6E8C" />
+              <rect x="18" y="8" width="2" height="2" fill="#ffffff" />
+              <rect x="16" y="4" width="2" height="2" fill="#F7E9C3" />
+            </svg>
+          </span>
+        ),
+
+        ModeRush: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="12" y="2" width="5" height="4" fill="#fbbf24" />
+              <rect x="10" y="6" width="5" height="4" fill="#fbbf24" />
+              <rect x="5" y="10" width="11" height="4" fill="#f59e0b" />
+              <rect x="8" y="14" width="5" height="4" fill="#fbbf24" />
+              <rect x="10" y="18" width="5" height="4" fill="#fbbf24" />
+              <rect x="13" y="3" width="2" height="2" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+
+        ModeMaze: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="2" y="2" width="20" height="4" fill="#9BB8D3" />
+              <rect x="2" y="18" width="20" height="4" fill="#9BB8D3" />
+              <rect x="2" y="6" width="4" height="12" fill="#9BB8D3" />
+              <rect x="18" y="6" width="4" height="12" fill="#9BB8D3" />
+              <rect x="8" y="6" width="4" height="8" fill="#9BB8D3" />
+              <rect x="14" y="10" width="4" height="8" fill="#9BB8D3" />
+              <rect x="10" y="10" width="4" height="4" fill="#CC6E8C" />
+            </svg>
+          </span>
+        ),
+
+        ModeZen: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="20" fill="#22d3ee" />
+              <rect x="2" y="10" width="20" height="4" fill="#22d3ee" />
+              <rect x="6" y="6" width="3" height="3" fill="#67e8f9" />
+              <rect x="15" y="6" width="3" height="3" fill="#67e8f9" />
+              <rect x="6" y="15" width="3" height="3" fill="#67e8f9" />
+              <rect x="15" y="15" width="3" height="3" fill="#67e8f9" />
+            </svg>
+          </span>
+        ),
+
+        ModeSurvival: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="6" y="4" width="12" height="14" fill="#e2e8f0" />
+              <rect x="8" y="6" width="3" height="3" fill="#1a1a2e" />
+              <rect x="13" y="6" width="3" height="3" fill="#1a1a2e" />
+              <rect x="9" y="12" width="6" height="2" fill="#1a1a2e" />
+              <rect x="6" y="18" width="4" height="3" fill="#e2e8f0" />
+              <rect x="14" y="18" width="4" height="3" fill="#e2e8f0" />
+              <rect x="10" y="3" width="4" height="1" fill="#ffffff" />
+            </svg>
+          </span>
+        ),
+
+        ModeInfinite: ({ className = "icon" }) => (
+          <span className={className}>
+            <svg viewBox="0 0 24 24" shapeRendering="crispEdges">
+              <rect x="10" y="2" width="4" height="4" fill="#fbbf24" />
+              <rect x="6" y="6" width="12" height="4" fill="#fbbf24" />
+              <rect x="4" y="10" width="16" height="4" fill="#fbbf24" />
+              <rect x="6" y="14" width="4" height="4" fill="#fbbf24" />
+              <rect x="14" y="14" width="4" height="4" fill="#fbbf24" />
+              <rect x="4" y="18" width="4" height="4" fill="#fbbf24" />
+              <rect x="16" y="18" width="4" height="4" fill="#fbbf24" />
+              <rect x="11" y="7" width="2" height="2" fill="#fef3c7" />
+            </svg>
+          </span>
+        ),
+      };
+
+      // ============ GAME CONSTANTS ============
+      const GRID_SIZE = 20;
+      const CELL_SIZE = 24;
+      const CANVAS_SIZE = GRID_SIZE * CELL_SIZE;
+      const SWIPE_THRESHOLD = 20;
+      const FEEDS_PER_LEVEL = 10;
+      const BASE_TICK_INTERVAL = 400;
+      const SPEED_STEP_PER_LEVEL = 40;
+      const MIN_TICK_INTERVAL = 80;
+
+      const FOOD_TYPES = {
+        apple: { name: "Apple", color: "#e74c3c", points: 10, effect: null },
+        strawberry: {
+          name: "Strawberry",
+          color: "#e84393",
+          points: 15,
+          effect: null,
+        },
+        cherry: { name: "Cherry", color: "#c0392b", points: 20, effect: null },
+        star: { name: "Star", color: "#f1c40f", points: 30, effect: "points" },
+        lightning: {
+          name: "Lightning",
+          color: "#f39c12",
+          points: 25,
+          effect: "speed",
+        },
+        snowflake: {
+          name: "Snowflake",
+          color: "#3498db",
+          points: 25,
+          effect: "slow",
+        },
+        crystal: {
+          name: "Crystal",
+          color: "#9b59b6",
+          points: 40,
+          effect: "points",
+        },
+      };
+
+      const GAME_MODES = {
+        classic: { name: "Classic", Icon: Icons.ModeClassic },
+        rush: { name: "Rush", Icon: Icons.ModeRush },
+        maze: { name: "Maze", Icon: Icons.ModeMaze },
+        zen: { name: "Zen", Icon: Icons.ModeZen },
+        survival: { name: "Survival", Icon: Icons.ModeSurvival },
+        infinite: { name: "Infinite", Icon: Icons.ModeInfinite },
+      };
+
+      const THEMES = [
+        {
+          id: "sakura",
+          name: "Sakura",
+          colors: ["#9BB8D3", "#CC6E8C", "#F7E9C3"],
+        },
+        { id: "noir", name: "Noir", colors: ["#888888", "#ffffff", "#ffdd44"] },
+        {
+          id: "berry",
+          name: "Berry",
+          colors: ["#e879a8", "#ff6b9d", "#ffd93d"],
+        },
+        { id: "aqua", name: "Aqua", colors: ["#4ade80", "#22d3ee", "#fbbf24"] },
+        {
+          id: "garden",
+          name: "Garden",
+          colors: ["#86efac", "#4ade80", "#fbbf24"],
+        },
+        {
+          id: "cosmic",
+          name: "Cosmic",
+          colors: ["#c084fc", "#e879f9", "#fbbf24"],
+        },
+        {
+          id: "arcade",
+          name: "Arcade",
+          colors: ["#fbbf24", "#f59e0b", "#4ade80"],
+        },
+      ];
+
+      const ACHIEVEMENTS = [
+        {
+          id: "first_bite",
+          name: "First Bite",
+          desc: "Eat your first food",
+          Icon: Icons.Apple,
+        },
+        {
+          id: "getting_long",
+          name: "Getting Long",
+          desc: "Reach length 10",
+          Icon: Icons.Snake,
+        },
+        {
+          id: "unstoppable",
+          name: "Unstoppable",
+          desc: "Reach level 5",
+          Icon: Icons.Lightning,
+        },
+        {
+          id: "serpent",
+          name: "Serpent",
+          desc: "Reach length 20",
+          Icon: Icons.Snake,
+        },
+        {
+          id: "combo_master",
+          name: "Combo Master",
+          desc: "Reach combo x5",
+          Icon: Icons.Star,
+        },
+        {
+          id: "high_scorer",
+          name: "High Scorer",
+          desc: "Score 500 points",
+          Icon: Icons.Trophy,
+        },
+        {
+          id: "survivor",
+          name: "Survivor",
+          desc: "Reach level 10",
+          Icon: Icons.Medal,
+        },
+        {
+          id: "legend",
+          name: "Legend",
+          desc: "Score 1000 points",
+          Icon: Icons.Crystal,
+        },
+      ];
+
+      // ============ HELPERS ============
+      const randomInt = (max) => Math.floor(Math.random() * max);
+
+      const isObstaclePath = (pos) => {
+        return (
+          (pos.x % 4 === 2 && pos.y % 4 === 2) ||
+          (pos.x % 4 === 2 && pos.y % 4 === 3) ||
+          (pos.x % 4 === 3 && pos.y % 4 === 2)
+        );
+      };
+
+      const generateFood = (snake, obstacles = [], mode = "classic") => {
+        const maxAttempts = 500;
+        for (let i = 0; i < maxAttempts; i++) {
+          const pos = { x: randomInt(GRID_SIZE), y: randomInt(GRID_SIZE) };
+          if (snake.some((s) => s.x === pos.x && s.y === pos.y)) continue;
+          if (obstacles.some((o) => o.x === pos.x && o.y === pos.y)) continue;
+          if (mode === "maze" && isObstaclePath(pos)) continue;
+          const rand = Math.random();
+          let type;
+          if (rand < 0.5) type = "apple";
+          else if (rand < 0.65) type = "strawberry";
+          else if (rand < 0.75) type = "cherry";
+          else if (rand < 0.85) type = "star";
+          else if (rand < 0.92) type = "lightning";
+          else if (rand < 0.97) type = "snowflake";
+          else type = "crystal";
+          return { ...pos, type };
+        }
+        return { x: 0, y: 0, type: "apple" };
+      };
+
+      const generateMazeObstacles = () => {
+        const obs = [];
+        for (let x = 0; x < GRID_SIZE; x++) {
+          for (let y = 0; y < GRID_SIZE; y++) {
+            if (x < 5 && y > 7 && y < 12) continue;
+            if (isObstaclePath({ x, y })) obs.push({ x, y });
+          }
+        }
+        return obs;
+      };
+
+      const createInitialSnake = () => {
+        const center = Math.floor(GRID_SIZE / 2);
+        return [
+          { x: center, y: center },
+          { x: center - 1, y: center },
+          { x: center - 2, y: center },
+        ];
+      };
+
+      const getTickInterval = (level, mode = "classic") => {
+        let base = BASE_TICK_INTERVAL;
+        if (mode === "rush") base = 250;
+        const interval = base - (level - 1) * SPEED_STEP_PER_LEVEL;
+        return Math.max(interval, MIN_TICK_INTERVAL);
+      };
+
+      // ============ AUDIO ENGINE ============
+      class AudioEngine {
+        constructor() {
+          this.ctx = null;
+          this.musicGain = null;
+          this.sfxGain = null;
+          this.musicEnabled = true;
+          this.sfxEnabled = true;
+          this.musicPlaying = false;
+          this.musicInterval = null;
+        }
+
+        init() {
+          if (this.ctx) return;
+          try {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.musicGain = this.ctx.createGain();
+            this.sfxGain = this.ctx.createGain();
+            this.musicGain.connect(this.ctx.destination);
+            this.sfxGain.connect(this.ctx.destination);
+            this.musicGain.gain.value = 0.15;
+            this.sfxGain.gain.value = 0.3;
+          } catch (e) {
+            console.log("Audio not supported");
+          }
+        }
+
+        playTone(freq, duration, type = "square", gain = 1) {
+          if (!this.ctx || !this.sfxEnabled) return;
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.value = freq;
+          g.gain.setValueAtTime(gain * 0.3, this.ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(
+            0.001,
+            this.ctx.currentTime + duration,
+          );
+          osc.connect(g);
+          g.connect(this.sfxGain);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        }
+
+        eat() {
+          this.playTone(880, 0.1, "square");
+          setTimeout(() => this.playTone(1100, 0.08), 50);
+        }
+        combo() {
+          this.playTone(660, 0.08);
+          setTimeout(() => this.playTone(880, 0.08), 60);
+          setTimeout(() => this.playTone(1320, 0.12), 120);
+        }
+        levelUp() {
+          [523, 659, 784, 1047].forEach((f, i) =>
+            setTimeout(() => this.playTone(f, 0.15), i * 80),
+          );
+        }
+        gameOver() {
+          [400, 350, 300, 200].forEach((f, i) =>
+            setTimeout(() => this.playTone(f, 0.2, "sawtooth"), i * 100),
+          );
+        }
+        click() {
+          this.playTone(600, 0.05, "square", 0.5);
+        }
+        pause() {
+          this.playTone(500, 0.1, "triangle");
+        }
+        achievement() {
+          [523, 659, 784, 1047, 1319].forEach((f, i) =>
+            setTimeout(() => this.playTone(f, 0.12), i * 60),
+          );
+        }
+
+        startMusic() {
+          if (!this.ctx || !this.musicEnabled || this.musicPlaying) return;
+          this.musicPlaying = true;
+          const notes = [262, 294, 330, 349, 392, 440, 494, 523];
+          let i = 0;
+          this.musicInterval = setInterval(() => {
+            if (!this.musicEnabled || !this.musicPlaying) return;
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.value = notes[i % notes.length] / 2;
+            g.gain.setValueAtTime(0.08, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(
+              0.001,
+              this.ctx.currentTime + 0.4,
+            );
+            osc.connect(g);
+            g.connect(this.musicGain);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.4);
+            i++;
+          }, 400);
+        }
+
+        stopMusic() {
+          this.musicPlaying = false;
+          if (this.musicInterval) {
+            clearInterval(this.musicInterval);
+            this.musicInterval = null;
+          }
+        }
+
+        setMusicEnabled(v) {
+          this.musicEnabled = v;
+          if (!v) this.stopMusic();
+        }
+        setSfxEnabled(v) {
+          this.sfxEnabled = v;
+        }
+      }
+
+      const audio = new AudioEngine();
+
+      // ============ MAIN APP ============
+      function App() {
+        const [screen, setScreen] = useState("menu");
+
+        const [settings, setSettings] = useState({
+          music: true,
+          sfx: true,
+          particles: true,
+          screenEffects: true,
+          difficulty: "normal",
+          showDpad: false,
+        });
+
+        const [theme, setTheme] = useState("sakura");
+        const [gameMode, setGameMode] = useState("classic");
+
+        const [snake, setSnake] = useState(createInitialSnake);
+        const [food, setFood] = useState({ x: 12, y: 10, type: "apple" });
+        const [direction, setDirection] = useState({ x: 1, y: 0 });
+        const [gameOver, setGameOver] = useState(false);
+        const [score, setScore] = useState(0);
+        const [level, setLevel] = useState(1);
+        const [feedsEaten, setFeedsEaten] = useState(0);
+        const [isPaused, setIsPaused] = useState(false);
+        const [combo, setCombo] = useState(0);
+        const [bestScore, setBestScore] = useState(0);
+        const [highScores, setHighScores] = useState([]);
+        const [achievements, setAchievements] = useState([]);
+        const [obstacles, setObstacles] = useState([]);
+        const [particles, setParticles] = useState([]);
+        const [floatTexts, setFloatTexts] = useState([]);
+        const [showComboDisplay, setShowComboDisplay] = useState(false);
+        const [comboValue, setComboValue] = useState(0);
+        const [newRecord, setNewRecord] = useState(false);
+        const [achievementToast, setAchievementToast] = useState(null);
+        const [levelUpFlash, setLevelUpFlash] = useState(false);
+
+        const canvasRef = useRef(null);
+        const snakeRef = useRef(snake);
+        const foodRef = useRef(food);
+        const directionRef = useRef(direction);
+        const gameOverRef = useRef(gameOver);
+        const isPausedRef = useRef(isPaused);
+        const levelRef = useRef(level);
+        const feedsEatenRef = useRef(feedsEaten);
+        const comboRef = useRef(combo);
+        const obstaclesRef = useRef(obstacles);
+        const screenRef = useRef(screen);
+        const gameModeRef = useRef(gameMode);
+        const settingsRef = useRef(settings);
+
+        const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
+        const touchActiveRef = useRef(false);
+        const particleIdRef = useRef(0);
+        const floatIdRef = useRef(0);
+
+        useEffect(() => {
+          snakeRef.current = snake;
+        }, [snake]);
+        useEffect(() => {
+          foodRef.current = food;
+        }, [food]);
+        useEffect(() => {
+          directionRef.current = direction;
+        }, [direction]);
+        useEffect(() => {
+          gameOverRef.current = gameOver;
+        }, [gameOver]);
+        useEffect(() => {
+          isPausedRef.current = isPaused;
+        }, [isPaused]);
+        useEffect(() => {
+          levelRef.current = level;
+        }, [level]);
+        useEffect(() => {
+          feedsEatenRef.current = feedsEaten;
+        }, [feedsEaten]);
+        useEffect(() => {
+          comboRef.current = combo;
+        }, [combo]);
+        useEffect(() => {
+          obstaclesRef.current = obstacles;
+        }, [obstacles]);
+        useEffect(() => {
+          screenRef.current = screen;
+        }, [screen]);
+        useEffect(() => {
+          gameModeRef.current = gameMode;
+        }, [gameMode]);
+        useEffect(() => {
+          settingsRef.current = settings;
+        }, [settings]);
+
+        useEffect(() => {
+          try {
+            const savedBest = localStorage.getItem("snake_best_score");
+            if (savedBest) setBestScore(parseInt(savedBest));
+            const savedScores = localStorage.getItem("snake_high_scores");
+            if (savedScores) setHighScores(JSON.parse(savedScores));
+            const savedAch = localStorage.getItem("snake_achievements");
+            if (savedAch) setAchievements(JSON.parse(savedAch));
+            const savedTheme = localStorage.getItem("snake_theme");
+            if (savedTheme) setTheme(savedTheme);
+            const savedSettings = localStorage.getItem("snake_settings");
+            if (savedSettings)
+              setSettings((prev) => ({
+                ...prev,
+                ...JSON.parse(savedSettings),
+              }));
+          } catch (e) {}
+        }, []);
+
+        useEffect(() => {
+          try {
+            localStorage.setItem("snake_theme", theme);
+            document.documentElement.setAttribute("data-theme", theme);
+          } catch (e) {}
+        }, [theme]);
+
+        useEffect(() => {
+          try {
+            localStorage.setItem("snake_settings", JSON.stringify(settings));
+            audio.setMusicEnabled(settings.music);
+            audio.setSfxEnabled(settings.sfx);
+          } catch (e) {}
+        }, [settings]);
+
+        useEffect(() => {
+          try {
+            localStorage.setItem("snake_best_score", bestScore.toString());
+          } catch (e) {}
+        }, [bestScore]);
+        useEffect(() => {
+          try {
+            localStorage.setItem(
+              "snake_high_scores",
+              JSON.stringify(highScores),
+            );
+          } catch (e) {}
+        }, [highScores]);
+        useEffect(() => {
+          try {
+            localStorage.setItem(
+              "snake_achievements",
+              JSON.stringify(achievements),
+            );
+          } catch (e) {}
+        }, [achievements]);
+
+        const unlockAchievement = useCallback((id) => {
+          setAchievements((prev) => {
+            if (prev.includes(id)) return prev;
+            const newAch = [...prev, id];
+            const ach = ACHIEVEMENTS.find((a) => a.id === id);
+            if (ach) {
+              setAchievementToast(ach);
+              audio.achievement();
+              setTimeout(() => setAchievementToast(null), 3000);
+            }
+            return newAch;
+          });
+        }, []);
+
+        const addFloatText = useCallback((text, x, y, color = null) => {
+          const id = floatIdRef.current++;
+          setFloatTexts((prev) => [
+            ...prev,
+            { id, text, x, y, color, createdAt: Date.now() },
+          ]);
+          setTimeout(() => {
+            setFloatTexts((prev) => prev.filter((f) => f.id !== id));
+          }, 1200);
+        }, []);
+
+        const addParticles = useCallback((x, y, count, color, speed = 2) => {
+          if (!settingsRef.current.particles) return;
+          const newParts = [];
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const vel = speed * (0.5 + Math.random());
+            newParts.push({
+              id: particleIdRef.current++,
+              x,
+              y,
+              vx: Math.cos(angle) * vel,
+              vy: Math.sin(angle) * vel,
+              life: 1,
+              color,
+              size: 2 + Math.random() * 3,
+            });
+          }
+          setParticles((prev) => [...prev, ...newParts]);
+        }, []);
+
+        useEffect(() => {
+          const interval = setInterval(() => {
+            setParticles((prev) => {
+              return prev
+                .map((p) => ({
+                  ...p,
+                  x: p.x + p.vx,
+                  y: p.y + p.vy,
+                  vy: p.vy + 0.15,
+                  life: p.life - 0.03,
+                }))
+                .filter((p) => p.life > 0);
+            });
+          }, 30);
+          return () => clearInterval(interval);
+        }, []);
+
+        const triggerScreenShake = useCallback(
+          (intensity = 5, duration = 0.3) => {
+            if (!settingsRef.current.screenEffects) return;
+            gsap.fromTo(
+              ".game-container",
+              { x: -intensity, y: -intensity },
+              {
+                x: intensity,
+                y: intensity,
+                duration: 0.05,
+                repeat: Math.floor(duration / 0.1),
+                yoyo: true,
+                ease: "power1.inOut",
+                onComplete: () => {
+                  gsap.set(".game-container", { x: 0, y: 0 });
+                },
+              },
+            );
+          },
+          [],
+        );
+
+        const startGame = useCallback(
+          (mode = null) => {
+            audio.init();
+            audio.click();
+            if (settings.music) audio.startMusic();
+
+            const newSnake = createInitialSnake();
+            const newObstacles =
+              (mode || gameMode) === "maze" ? generateMazeObstacles() : [];
+            const newFood = generateFood(
+              newSnake,
+              newObstacles,
+              mode || gameMode,
+            );
+
+            setSnake(newSnake);
+            setFood(newFood);
+            setDirection({ x: 1, y: 0 });
+            setGameOver(false);
+            setScore(0);
+            setLevel(1);
+            setFeedsEaten(0);
+            setIsPaused(false);
+            setCombo(0);
+            setObstacles(newObstacles);
+            setParticles([]);
+            setFloatTexts([]);
+            setNewRecord(false);
+            setLevelUpFlash(false);
+            setScreen("playing");
+          },
+          [settings.music, gameMode],
+        );
+
+        const resetGame = useCallback(() => {
+          startGame();
+        }, [startGame]);
+
+        const handleGameOver = useCallback(() => {
+          setGameOver(true);
+          audio.stopMusic();
+          audio.gameOver();
+          triggerScreenShake(8, 0.4);
+
+          if (score > bestScore) {
+            setNewRecord(true);
+            setBestScore(score);
+            setHighScores((prev) => {
+              return [
+                ...prev,
+                { score, date: new Date().toISOString(), mode: gameMode },
+              ]
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10);
+            });
+            audio.achievement();
+          }
+          setTimeout(() => setScreen("gameover"), 800);
+        }, [score, bestScore, gameMode, triggerScreenShake]);
+
+        const changeDirection = useCallback((newDir) => {
+          if (gameOverRef.current || isPausedRef.current) return;
+          if (screenRef.current !== "playing") return;
+          const { x, y } = directionRef.current;
+          if (newDir.x === -x && newDir.y === -y && (x !== 0 || y !== 0))
+            return;
+          setDirection(newDir);
+        }, []);
+
+        const handleTouchStart = useCallback((e) => {
+          const touch = e.touches[0];
+          touchStartRef.current = {
+            x: touch.clientX,
+            y: touch.clientY,
+            time: Date.now(),
+          };
+          touchActiveRef.current = true;
+        }, []);
+
+        const handleTouchEnd = useCallback(
+          (e) => {
+            if (!touchActiveRef.current) return;
+            touchActiveRef.current = false;
+            if (screenRef.current !== "playing") return;
+            if (isPausedRef.current) return;
+
+            const touch = e.changedTouches[0];
+            const deltaX = touch.clientX - touchStartRef.current.x;
+            const deltaY = touch.clientY - touchStartRef.current.y;
+            const absX = Math.abs(deltaX);
+            const absY = Math.abs(deltaY);
+            const elapsed = Date.now() - touchStartRef.current.time;
+
+            if (
+              absX < SWIPE_THRESHOLD &&
+              absY < SWIPE_THRESHOLD &&
+              elapsed < 250
+            ) {
+              setIsPaused((prev) => !prev);
+              audio.pause();
+              return;
+            }
+            if (Math.max(absX, absY) < SWIPE_THRESHOLD) return;
+
+            if (absX > absY) changeDirection({ x: deltaX > 0 ? 1 : -1, y: 0 });
+            else changeDirection({ x: 0, y: deltaY > 0 ? 1 : -1 });
+          },
+          [changeDirection],
+        );
+
+        useEffect(() => {
+          const handleKeyDown = (e) => {
+            if (
+              [
+                "ArrowUp",
+                "ArrowDown",
+                "ArrowLeft",
+                "ArrowRight",
+                " ",
+                "w",
+                "a",
+                "s",
+                "d",
+                "W",
+                "A",
+                "S",
+                "D",
+                "p",
+                "P",
+              ].includes(e.key)
+            ) {
+              e.preventDefault();
+            }
+            if (e.key === " " || e.key === "p" || e.key === "P") {
+              if (screenRef.current === "playing" && !gameOverRef.current) {
+                setIsPaused((prev) => !prev);
+                audio.pause();
+              }
+              return;
+            }
+            if (screenRef.current !== "playing") return;
+            if (gameOverRef.current || isPausedRef.current) return;
+            switch (e.key) {
+              case "ArrowUp":
+              case "w":
+              case "W":
+                changeDirection({ x: 0, y: -1 });
+                break;
+              case "ArrowDown":
+              case "s":
+              case "S":
+                changeDirection({ x: 0, y: 1 });
+                break;
+              case "ArrowLeft":
+              case "a":
+              case "A":
+                changeDirection({ x: -1, y: 0 });
+                break;
+              case "ArrowRight":
+              case "d":
+              case "D":
+                changeDirection({ x: 1, y: 0 });
+                break;
+            }
+          };
+          window.addEventListener("keydown", handleKeyDown);
+          return () => window.removeEventListener("keydown", handleKeyDown);
+        }, [changeDirection]);
+
+        useEffect(() => {
+          if (screen !== "playing" || gameOver || isPaused) return;
+
+          const moveSnake = () => {
+            const currentSnake = snakeRef.current;
+            const currentFood = foodRef.current;
+            const dir = directionRef.current;
+            const currentObstacles = obstaclesRef.current;
+            const mode = gameModeRef.current;
+
+            const head = currentSnake[0];
+            const newHead = { x: head.x + dir.x, y: head.y + dir.y };
+
+            if (mode === "zen") {
+              if (newHead.x < 0) newHead.x = GRID_SIZE - 1;
+              if (newHead.x >= GRID_SIZE) newHead.x = 0;
+              if (newHead.y < 0) newHead.y = GRID_SIZE - 1;
+              if (newHead.y >= GRID_SIZE) newHead.y = 0;
+            } else {
+              if (
+                newHead.x < 0 ||
+                newHead.x >= GRID_SIZE ||
+                newHead.y < 0 ||
+                newHead.y >= GRID_SIZE
+              ) {
+                handleGameOver();
+                return;
+              }
+            }
+
+            if (
+              currentObstacles.some(
+                (o) => o.x === newHead.x && o.y === newHead.y,
+              )
+            ) {
+              handleGameOver();
+              return;
+            }
+
+            const willEat =
+              newHead.x === currentFood.x && newHead.y === currentFood.y;
+            const snakeWithoutTail = willEat
+              ? currentSnake
+              : currentSnake.slice(0, -1);
+
+            if (
+              snakeWithoutTail.some(
+                (s) => s.x === newHead.x && s.y === newHead.y,
+              )
+            ) {
+              handleGameOver();
+              return;
+            }
+
+            let newSnake;
+            if (willEat) {
+              newSnake = [newHead, ...currentSnake];
+              const foodData = FOOD_TYPES[currentFood.type] || FOOD_TYPES.apple;
+              const newCombo = comboRef.current + 1;
+              setCombo(newCombo);
+
+              const comboMultiplier = 1 + Math.floor(newCombo / 3) * 0.5;
+              const points = Math.round(foodData.points * comboMultiplier);
+              setScore((prev) => prev + points);
+
+              const canvasRect = canvasRef.current?.getBoundingClientRect();
+              if (canvasRect) {
+                const px = (currentFood.x / GRID_SIZE) * canvasRect.width;
+                const py = (currentFood.y / GRID_SIZE) * canvasRect.height;
+                addFloatText(`+${points}`, px, py, foodData.color);
+                if (newCombo >= 3)
+                  addFloatText(`COMBO x${newCombo}`, px, py - 30, "#fbbf24");
+              }
+
+              addParticles(
+                currentFood.x * CELL_SIZE + CELL_SIZE / 2,
+                currentFood.y * CELL_SIZE + CELL_SIZE / 2,
+                12,
+                foodData.color,
+                3,
+              );
+
+              if (newCombo >= 3 && newCombo % 3 === 0) {
+                setComboValue(newCombo);
+                setShowComboDisplay(true);
+                audio.combo();
+                setTimeout(() => setShowComboDisplay(false), 800);
+              }
+
+              audio.eat();
+
+              if (newSnake.length >= 10) unlockAchievement("getting_long");
+              if (newSnake.length >= 20) unlockAchievement("serpent");
+              if (newCombo >= 5) unlockAchievement("combo_master");
+              if (score + points >= 500) unlockAchievement("high_scorer");
+              if (score + points >= 1000) unlockAchievement("legend");
+              unlockAchievement("first_bite");
+
+              if (foodData.effect === "slow") {
+                setSnake(newSnake);
+                setFood(generateFood(newSnake, currentObstacles, mode));
+                return;
+              }
+
+              const newFeedsEaten = feedsEatenRef.current + 1;
+              setFeedsEaten(newFeedsEaten);
+
+              if (newFeedsEaten >= FEEDS_PER_LEVEL) {
+                setFeedsEaten(0);
+                const newLevel = levelRef.current + 1;
+                setLevel(newLevel);
+                setLevelUpFlash(true);
+                audio.levelUp();
+                triggerScreenShake(4, 0.2);
+
+                gsap.fromTo(
+                  ".game-container",
+                  {
+                    boxShadow: `0 0 0 4px var(--theme-border), 6px 6px 0 0 rgba(0,0,0,0.5)`,
+                  },
+                  {
+                    boxShadow: `0 0 0 4px var(--theme-food), 0 0 40px 8px var(--theme-glow), 6px 6px 0 0 rgba(0,0,0,0.5)`,
+                    duration: 0.35,
+                    yoyo: true,
+                    repeat: 1,
+                    onComplete: () => setLevelUpFlash(false),
+                  },
+                );
+
+                if (newLevel >= 5) unlockAchievement("unstoppable");
+                if (newLevel >= 10) unlockAchievement("survivor");
+              }
+
+              setFood(generateFood(newSnake, currentObstacles, mode));
+            } else {
+              newSnake = [newHead, ...currentSnake.slice(0, -1)];
+            }
+
+            setSnake(newSnake);
+          };
+
+          const interval = getTickInterval(
+            levelRef.current,
+            gameModeRef.current,
+          );
+          const intervalId = setInterval(moveSnake, interval);
+          return () => clearInterval(intervalId);
+        }, [
+          screen,
+          gameOver,
+          isPaused,
+          level,
+          handleGameOver,
+          addFloatText,
+          addParticles,
+          unlockAchievement,
+          triggerScreenShake,
+          score,
+        ]);
+
+        useEffect(() => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = false;
+          ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+          const canvasStyle = getComputedStyle(document.documentElement);
+          const bgColor =
+            canvasStyle.getPropertyValue("--theme-canvas").trim() || "#0f0f1a";
+          const gridColor =
+            canvasStyle.getPropertyValue("--theme-grid").trim() || "#2a2a4a";
+
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+          ctx.strokeStyle = gridColor;
+          ctx.lineWidth = 1;
+          for (let i = 0; i <= GRID_SIZE; i++) {
+            ctx.beginPath();
+            ctx.moveTo(i * CELL_SIZE, 0);
+            ctx.lineTo(i * CELL_SIZE, CANVAS_SIZE);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, i * CELL_SIZE);
+            ctx.lineTo(CANVAS_SIZE, i * CELL_SIZE);
+            ctx.stroke();
+          }
+
+          obstacles.forEach((obs) => {
+            ctx.fillStyle = "#4a4a6a";
+            ctx.fillRect(
+              obs.x * CELL_SIZE + 1,
+              obs.y * CELL_SIZE + 1,
+              CELL_SIZE - 2,
+              CELL_SIZE - 2,
+            );
+            ctx.fillStyle = "#3a3a5a";
+            ctx.fillRect(
+              obs.x * CELL_SIZE + 3,
+              obs.y * CELL_SIZE + 3,
+              CELL_SIZE - 6,
+              CELL_SIZE - 6,
+            );
+          });
+
+          if (food) {
+            const fx = food.x * CELL_SIZE;
+            const fy = food.y * CELL_SIZE;
+            const foodData = FOOD_TYPES[food.type] || FOOD_TYPES.apple;
+
+            ctx.shadowColor = foodData.color;
+            ctx.shadowBlur = 15;
+
+            if (food.type === "star") {
+              ctx.fillStyle = "#fbbf24";
+              ctx.fillRect(fx + 10, fy + 2, 4, 4);
+              ctx.fillRect(fx + 6, fy + 6, 12, 4);
+              ctx.fillRect(fx + 4, fy + 10, 16, 4);
+              ctx.fillRect(fx + 6, fy + 14, 4, 4);
+              ctx.fillRect(fx + 14, fy + 14, 4, 4);
+              ctx.fillRect(fx + 4, fy + 18, 4, 4);
+              ctx.fillRect(fx + 16, fy + 18, 4, 4);
+              ctx.fillStyle = "#fef3c7";
+              ctx.fillRect(fx + 11, fy + 7, 2, 2);
+            } else if (food.type === "lightning") {
+              ctx.fillStyle = "#fbbf24";
+              ctx.fillRect(fx + 12, fy + 2, 5, 4);
+              ctx.fillRect(fx + 10, fy + 6, 5, 4);
+              ctx.fillRect(fx + 5, fy + 10, 11, 4);
+              ctx.fillRect(fx + 8, fy + 14, 5, 4);
+              ctx.fillRect(fx + 10, fy + 18, 5, 4);
+              ctx.fillStyle = "#fef3c7";
+              ctx.fillRect(fx + 13, fy + 3, 2, 2);
+            } else if (food.type === "snowflake") {
+              ctx.fillStyle = "#22d3ee";
+              ctx.fillRect(fx + 10, fy + 2, 4, 20);
+              ctx.fillRect(fx + 2, fy + 10, 20, 4);
+              ctx.fillStyle = "#67e8f9";
+              ctx.fillRect(fx + 6, fy + 6, 3, 3);
+              ctx.fillRect(fx + 15, fy + 6, 3, 3);
+              ctx.fillRect(fx + 6, fy + 15, 3, 3);
+              ctx.fillRect(fx + 15, fy + 15, 3, 3);
+            } else if (food.type === "crystal") {
+              ctx.fillStyle = "#c084fc";
+              ctx.fillRect(fx + 8, fy + 3, 8, 4);
+              ctx.fillStyle = "#a855f7";
+              ctx.fillRect(fx + 6, fy + 7, 12, 4);
+              ctx.fillStyle = "#9333ea";
+              ctx.fillRect(fx + 4, fy + 11, 16, 4);
+              ctx.fillStyle = "#a855f7";
+              ctx.fillRect(fx + 6, fy + 15, 12, 4);
+              ctx.fillStyle = "#c084fc";
+              ctx.fillRect(fx + 8, fy + 19, 8, 3);
+              ctx.fillStyle = "#e9d5ff";
+              ctx.fillRect(fx + 10, fy + 5, 2, 2);
+            } else if (food.type === "strawberry") {
+              ctx.fillStyle = "#e84393";
+              ctx.fillRect(fx + 7, fy + 10, 10, 10);
+              ctx.fillRect(fx + 8, fy + 8, 8, 2);
+              ctx.fillRect(fx + 5, fy + 11, 2, 6);
+              ctx.fillRect(fx + 17, fy + 11, 2, 6);
+              ctx.fillStyle = "#ffd93d";
+              ctx.fillRect(fx + 10, fy + 13, 1, 1);
+              ctx.fillRect(fx + 13, fy + 13, 1, 1);
+              ctx.fillRect(fx + 11, fy + 16, 1, 1);
+              ctx.fillRect(fx + 14, fy + 16, 1, 1);
+              ctx.fillStyle = "#4ade80";
+              ctx.fillRect(fx + 10, fy + 4, 4, 3);
+              ctx.fillRect(fx + 12, fy + 3, 2, 1);
+            } else if (food.type === "cherry") {
+              ctx.fillStyle = "#c0392b";
+              ctx.fillRect(fx + 4, fy + 13, 6, 7);
+              ctx.fillRect(fx + 5, fy + 11, 4, 2);
+              ctx.fillStyle = "#e74c3c";
+              ctx.fillRect(fx + 14, fy + 13, 6, 7);
+              ctx.fillRect(fx + 15, fy + 11, 4, 2);
+              ctx.fillStyle = "#ff6b6b";
+              ctx.fillRect(fx + 6, fy + 14, 1, 1);
+              ctx.fillStyle = "#ff8888";
+              ctx.fillRect(fx + 16, fy + 14, 1, 1);
+              ctx.fillStyle = "#4ade80";
+              ctx.fillRect(fx + 7, fy + 4, 2, 7);
+              ctx.fillStyle = "#22c55e";
+              ctx.fillRect(fx + 15, fy + 5, 2, 6);
+            } else {
+              ctx.fillStyle = "#e74c3c";
+              ctx.fillRect(fx + 6, fy + 9, 12, 11);
+              ctx.fillRect(fx + 8, fy + 7, 8, 2);
+              ctx.fillStyle = "#ff6b6b";
+              ctx.fillRect(fx + 7, fy + 10, 2, 2);
+              ctx.fillStyle = "#5d4e37";
+              ctx.fillRect(fx + 12, fy + 4, 2, 3);
+              ctx.fillStyle = "#4ade80";
+              ctx.fillRect(fx + 10, fy + 4, 4, 2);
+            }
+
+            ctx.shadowBlur = 0;
+          }
+
+          const headColor =
+            canvasStyle.getPropertyValue("--theme-snake-head").trim() ||
+            "#CC6E8C";
+          const bodyColor =
+            canvasStyle.getPropertyValue("--theme-snake-body").trim() ||
+            "#D89BA8";
+
+          snake.forEach((segment, index) => {
+            const isHead = index === 0;
+            const x = segment.x * CELL_SIZE;
+            const y = segment.y * CELL_SIZE;
+            const padding = isHead ? 2 : 3;
+
+            let color;
+            if (isHead) {
+              color = headColor;
+              ctx.shadowColor = headColor;
+              ctx.shadowBlur = 12;
+            } else {
+              color = bodyColor;
+              ctx.shadowColor = bodyColor;
+              ctx.shadowBlur = 6;
+            }
+
+            ctx.fillStyle = color;
+            ctx.fillRect(
+              x + padding,
+              y + padding,
+              CELL_SIZE - padding * 2,
+              CELL_SIZE - padding * 2,
+            );
+
+            if (isHead) {
+              ctx.fillStyle = "#ffffff";
+              const eyeSize = 3;
+              const { x: dx, y: dy } = directionRef.current;
+              if (dx === 1) {
+                ctx.fillRect(x + CELL_SIZE - 9, y + 5, eyeSize, eyeSize);
+                ctx.fillRect(
+                  x + CELL_SIZE - 9,
+                  y + CELL_SIZE - 8,
+                  eyeSize,
+                  eyeSize,
+                );
+              } else if (dx === -1) {
+                ctx.fillRect(x + 6, y + 5, eyeSize, eyeSize);
+                ctx.fillRect(x + 6, y + CELL_SIZE - 8, eyeSize, eyeSize);
+              } else if (dy === 1) {
+                ctx.fillRect(x + 5, y + CELL_SIZE - 9, eyeSize, eyeSize);
+                ctx.fillRect(
+                  x + CELL_SIZE - 8,
+                  y + CELL_SIZE - 9,
+                  eyeSize,
+                  eyeSize,
+                );
+              } else {
+                ctx.fillRect(x + 5, y + 6, eyeSize, eyeSize);
+                ctx.fillRect(x + CELL_SIZE - 8, y + 6, eyeSize, eyeSize);
+              }
+            }
+          });
+
+          ctx.shadowBlur = 0;
+
+          particles.forEach((p) => {
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+          });
+          ctx.globalAlpha = 1;
+        }, [snake, food, gameOver, direction, particles, obstacles]);
+
+        const progressPercent = (feedsEaten / FEEDS_PER_LEVEL) * 100;
+        const currentInterval = getTickInterval(level, gameMode);
+        const secondsPerMove = (currentInterval / 1000).toFixed(1);
+        const comboMultiplier = 1 + Math.floor(combo / 3) * 0.5;
+
+        // ============ SCREENS ============
+
+        const renderMenu = () => (
+          <div className="screen start-screen">
+            <div className="logo">
+              <Icons.Snake className="icon icon-xl" />
+              SNAKE
+            </div>
+
+            <button
+              className="menu-btn primary"
+              onClick={() => {
+                audio.init();
+                audio.click();
+                setScreen("modes");
+              }}
+            >
+              <Icons.Play className="icon" /> PLAY
+            </button>
+
+            <div className="btn-row">
+              <button
+                className="menu-btn"
+                onClick={() => {
+                  audio.click();
+                  setScreen("highscores");
+                }}
+              >
+                <Icons.Trophy className="icon icon-sm" /> SCORES
+              </button>
+              <button
+                className="menu-btn"
+                onClick={() => {
+                  audio.click();
+                  setScreen("howto");
+                }}
+              >
+                <Icons.Book className="icon icon-sm" /> HOW TO
+              </button>
+            </div>
+
+            <div className="btn-row">
+              <button
+                className="menu-btn"
+                onClick={() => {
+                  audio.click();
+                  setScreen("customize");
+                }}
+              >
+                <Icons.Palette className="icon icon-sm" /> SKINS
+              </button>
+              <button
+                className="menu-btn"
+                onClick={() => {
+                  audio.click();
+                  setScreen("settings");
+                }}
+              >
+                <Icons.Gear className="icon icon-sm" /> SETTINGS
+              </button>
+            </div>
+
+            <div className="btn-row">
+              <button
+                className="menu-btn"
+                onClick={() => {
+                  audio.click();
+                  setScreen("achievements");
+                }}
+              >
+                <Icons.Medal className="icon icon-sm" /> AWARDS
+              </button>
+              <button
+                className="menu-btn"
+                onClick={() => {
+                  audio.click();
+                  setScreen("daily");
+                }}
+              >
+                <Icons.Calendar className="icon icon-sm" /> DAILY
+              </button>
+            </div>
+          </div>
+        );
+
+        const renderModes = () => (
+          <div className="screen">
+            <div className="screen-title">SELECT MODE</div>
+
+            <div className="mode-grid">
+              {Object.entries(GAME_MODES).map(([key, mode]) => {
+                const IconComp = mode.Icon;
+                return (
+                  <div
+                    key={key}
+                    className={`mode-card ${gameMode === key ? "selected" : ""}`}
+                    onClick={() => {
+                      audio.click();
+                      setGameMode(key);
+                    }}
+                  >
+                    <IconComp className="icon icon-lg" />
+                    <div className="mode-name">{mode.name}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <button
+              className="menu-btn primary"
+              onClick={() => startGame()}
+              style={{ marginTop: 8 }}
+            >
+              <Icons.Play className="icon" /> START
+            </button>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderPlaying = () => (
+          <>
+            <div className="hud">
+              <div className="hud-panel">
+                <div className="hud-label">SCORE</div>
+                <div className="hud-value gold">{score}</div>
+              </div>
+              <div className="hud-panel">
+                <div className="hud-label">BEST</div>
+                <div className="hud-value">{Math.max(bestScore, score)}</div>
+              </div>
+              <div className="hud-panel">
+                <div className="hud-label">LEVEL</div>
+                <div className="hud-value pink">{level}</div>
+              </div>
+            </div>
+
+            <div
+              className="canvas-wrapper"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <canvas
+                ref={canvasRef}
+                width={CANVAS_SIZE}
+                height={CANVAS_SIZE}
+              />
+
+              {showComboDisplay && (
+                <div className="combo-display" style={{ opacity: 1 }}>
+                  COMBO x{comboValue}
+                </div>
+              )}
+
+              {floatTexts.map((ft) => (
+                <div
+                  key={ft.id}
+                  className="float-text"
+                  style={{
+                    left: ft.x,
+                    top: ft.y,
+                    color: ft.color || "var(--theme-food)",
+                    animation: "floatUp 1.2s ease-out forwards",
+                  }}
+                >
+                  {ft.text}
+                </div>
+              ))}
+            </div>
+
+            <div className="progress-container">
+              <div
+                className="progress-fill"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+
+            {isPaused && (
+              <div className="pause-overlay">
+                <div className="pause-title">
+                  <Icons.Pause className="icon icon-lg" /> PAUSED
+                </div>
+                <button
+                  className="menu-btn primary"
+                  onClick={() => {
+                    setIsPaused(false);
+                    audio.click();
+                  }}
+                >
+                  <Icons.Play className="icon" /> RESUME
+                </button>
+                <button
+                  className="menu-btn"
+                  onClick={() => {
+                    setIsPaused(false);
+                    setScreen("menu");
+                    audio.click();
+                    audio.stopMusic();
+                  }}
+                >
+                  <Icons.Home className="icon icon-sm" /> MAIN MENU
+                </button>
+              </div>
+            )}
+
+            <div className="hint">
+              {settings.showDpad && <span>D-PAD ON · </span>}
+              SWIPE / ARROWS TO MOVE · TAP TO PAUSE
+            </div>
+
+            {settings.showDpad && (
+              <div className="dpad visible">
+                <div
+                  className="dpad-btn up"
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    changeDirection({ x: 0, y: -1 });
+                  }}
+                >
+                  ▲
+                </div>
+                <div
+                  className="dpad-btn left"
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    changeDirection({ x: -1, y: 0 });
+                  }}
+                >
+                  ◀
+                </div>
+                <div
+                  className="dpad-btn right"
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    changeDirection({ x: 1, y: 0 });
+                  }}
+                >
+                  ▶
+                </div>
+                <div
+                  className="dpad-btn down"
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    changeDirection({ x: 0, y: 1 });
+                  }}
+                >
+                  ▼
+                </div>
+              </div>
+            )}
+          </>
+        );
+
+        const renderGameOver = () => (
+          <div className="screen game-over-screen">
+            <div
+              className="screen-title"
+              style={{ color: "var(--theme-danger)" }}
+            >
+              <Icons.Skull className="icon icon-lg" /> GAME OVER
+            </div>
+
+            {newRecord && (
+              <div className="new-record">
+                <Icons.Trophy className="icon" /> NEW RECORD{" "}
+                <Icons.Trophy className="icon" />
+              </div>
+            )}
+
+            <div className="big-score">{score}</div>
+
+            <div className="stat-row">
+              <div className="stat-item">
+                <div className="stat-label">BEST</div>
+                <div className="stat-value">{bestScore}</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-label">LEVEL</div>
+                <div className="stat-value">{level}</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-label">LENGTH</div>
+                <div className="stat-value">{snake.length}</div>
+              </div>
+            </div>
+
+            <button
+              className="menu-btn primary"
+              onClick={resetGame}
+              style={{ marginTop: 12 }}
+            >
+              <Icons.Refresh className="icon" /> TRY AGAIN
+            </button>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                audio.stopMusic();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> MAIN MENU
+            </button>
+          </div>
+        );
+
+        const renderHighScores = () => (
+          <div className="screen">
+            <div className="screen-title">
+              <Icons.Trophy className="icon icon-lg" /> HIGH SCORES
+            </div>
+
+            <div className="scroll-panel">
+              {highScores.length === 0 ? (
+                <div className="hint" style={{ padding: 20 }}>
+                  NO SCORES YET
+                </div>
+              ) : (
+                highScores.map((hs, i) => (
+                  <div key={i} className="score-entry">
+                    <div className="score-rank">#{i + 1}</div>
+                    <div className="score-name">{hs.mode || "classic"}</div>
+                    <div className="score-points">{hs.score}</div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderHowTo = () => (
+          <div className="screen">
+            <div className="screen-title">
+              <Icons.Book className="icon icon-lg" /> HOW TO PLAY
+            </div>
+
+            <div className="scroll-panel">
+              <div className="howto-item">
+                <div className="howto-icon">
+                  <Icons.Dpad className="icon icon-lg" />
+                </div>
+                <div className="howto-text">
+                  <div className="howto-title">MOVE</div>
+                  <div className="howto-desc">
+                    Arrow keys or WASD on desktop. Swipe on mobile. Space/P to
+                    pause.
+                  </div>
+                </div>
+              </div>
+
+              <div className="howto-item">
+                <div className="howto-icon">
+                  <Icons.Apple className="icon icon-lg" />
+                </div>
+                <div className="howto-text">
+                  <div className="howto-title">FOOD</div>
+                  <div className="howto-desc">
+                    Eat to grow and score. Different foods give different points
+                    and effects.
+                  </div>
+                </div>
+              </div>
+
+              <div className="howto-item">
+                <div className="howto-icon">
+                  <Icons.Star className="icon icon-lg" />
+                </div>
+                <div className="howto-text">
+                  <div className="howto-title">COMBO</div>
+                  <div className="howto-desc">
+                    Keep eating without missing to build a combo multiplier.
+                  </div>
+                </div>
+              </div>
+
+              <div className="howto-item">
+                <div className="howto-icon">
+                  <Icons.ModeMaze className="icon icon-lg" />
+                </div>
+                <div className="howto-text">
+                  <div className="howto-title">OBSTACLES</div>
+                  <div className="howto-desc">
+                    Maze mode has static blocks. Avoid them or perish.
+                  </div>
+                </div>
+              </div>
+
+              <div className="howto-item">
+                <div className="howto-icon">
+                  <Icons.Lightning className="icon icon-lg" />
+                </div>
+                <div className="howto-text">
+                  <div className="howto-title">POWER-UPS</div>
+                  <div className="howto-desc">
+                    Star and Crystal give bonus points. Lightning speeds up.
+                    Snowflake slows down.
+                  </div>
+                </div>
+              </div>
+
+              <div className="howto-item">
+                <div className="howto-icon">
+                  <Icons.Target className="icon icon-lg" />
+                </div>
+                <div className="howto-text">
+                  <div className="howto-title">MODES</div>
+                  <div className="howto-desc">
+                    Classic, Rush, Maze, Zen, Survival, and Infinite. Each
+                    offers a unique twist.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderSettings = () => (
+          <div className="screen">
+            <div className="screen-title">
+              <Icons.Gear className="icon icon-lg" /> SETTINGS
+            </div>
+
+            <div className="scroll-panel">
+              <div className="settings-row">
+                <div className="settings-label">
+                  <Icons.Music className="icon icon-sm" /> MUSIC
+                </div>
+                <div
+                  className={`toggle ${settings.music ? "on" : ""}`}
+                  onClick={() => {
+                    setSettings((s) => ({ ...s, music: !s.music }));
+                    audio.click();
+                  }}
+                />
+              </div>
+
+              <div className="settings-row">
+                <div className="settings-label">
+                  <Icons.Speaker className="icon icon-sm" /> SOUND FX
+                </div>
+                <div
+                  className={`toggle ${settings.sfx ? "on" : ""}`}
+                  onClick={() => {
+                    setSettings((s) => ({ ...s, sfx: !s.sfx }));
+                    audio.click();
+                  }}
+                />
+              </div>
+
+              <div className="settings-row">
+                <div className="settings-label">
+                  <Icons.Sparkle className="icon icon-sm" /> PARTICLES
+                </div>
+                <div
+                  className={`toggle ${settings.particles ? "on" : ""}`}
+                  onClick={() => {
+                    setSettings((s) => ({ ...s, particles: !s.particles }));
+                    audio.click();
+                  }}
+                />
+              </div>
+
+              <div className="settings-row">
+                <div className="settings-label">
+                  <Icons.Explosion className="icon icon-sm" /> SCREEN FX
+                </div>
+                <div
+                  className={`toggle ${settings.screenEffects ? "on" : ""}`}
+                  onClick={() => {
+                    setSettings((s) => ({
+                      ...s,
+                      screenEffects: !s.screenEffects,
+                    }));
+                    audio.click();
+                  }}
+                />
+              </div>
+
+              <div className="settings-row">
+                <div className="settings-label">
+                  <Icons.Dpad className="icon icon-sm" /> SHOW D-PAD
+                </div>
+                <div
+                  className={`toggle ${settings.showDpad ? "on" : ""}`}
+                  onClick={() => {
+                    setSettings((s) => ({ ...s, showDpad: !s.showDpad }));
+                    audio.click();
+                  }}
+                />
+              </div>
+
+              <div className="settings-row">
+                <div className="settings-label">
+                  <Icons.Target className="icon icon-sm" /> DIFFICULTY
+                </div>
+                <div style={{ display: "flex", gap: 6 }}>
+                  {["easy", "normal", "hard"].map((d) => (
+                    <button
+                      key={d}
+                      className="menu-btn"
+                      style={{
+                        padding: "6px 10px",
+                        fontSize: "0.7rem",
+                        maxWidth: 70,
+                        boxShadow:
+                          settings.difficulty === d
+                            ? "2px 2px 0 0 var(--theme-btn-shadow), 0 0 10px var(--theme-glow)"
+                            : "3px 3px 0 0 var(--theme-btn-shadow)",
+                      }}
+                      onClick={() => {
+                        setSettings((s) => ({ ...s, difficulty: d }));
+                        audio.click();
+                      }}
+                    >
+                      {d.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderCustomize = () => (
+          <div className="screen">
+            <div className="screen-title">
+              <Icons.Palette className="icon icon-lg" /> CUSTOMIZE
+            </div>
+
+            <div className="scroll-panel">
+              <div className="theme-grid">
+                {THEMES.map((t) => (
+                  <div
+                    key={t.id}
+                    className={`theme-swatch ${theme === t.id ? "selected" : ""}`}
+                    style={{
+                      background: `linear-gradient(135deg, ${t.colors[0]} 0%, ${t.colors[1]} 50%, ${t.colors[2]} 100%)`,
+                      color: t.colors[1],
+                    }}
+                    onClick={() => {
+                      setTheme(t.id);
+                      audio.click();
+                    }}
+                  >
+                    <span className="swatch-name">{t.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderAchievements = () => (
+          <div className="screen">
+            <div className="screen-title">
+              <Icons.Medal className="icon icon-lg" /> ACHIEVEMENTS
+            </div>
+
+            <div className="scroll-panel">
+              {ACHIEVEMENTS.map((ach) => {
+                const unlocked = achievements.includes(ach.id);
+                const IconComp = ach.Icon;
+                return (
+                  <div
+                    key={ach.id}
+                    className="score-entry"
+                    style={{ opacity: unlocked ? 1 : 0.4 }}
+                  >
+                    <div
+                      style={{
+                        minWidth: 40,
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {unlocked ? (
+                        <IconComp className="icon icon-lg" />
+                      ) : (
+                        <Icons.Skull className="icon icon-lg" />
+                      )}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: "0.85rem",
+                          fontWeight: 700,
+                          color: unlocked
+                            ? "var(--theme-food)"
+                            : "var(--theme-text-muted)",
+                          letterSpacing: 1,
+                        }}
+                      >
+                        {ach.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.65rem",
+                          color: "var(--theme-text-muted)",
+                          marginTop: 2,
+                        }}
+                      >
+                        {ach.desc}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderDaily = () => (
+          <div className="screen">
+            <div className="screen-title">
+              <Icons.Calendar className="icon icon-lg" /> DAILY CHALLENGE
+            </div>
+
+            <div className="scroll-panel">
+              <div
+                className="howto-item"
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                  padding: 20,
+                }}
+              >
+                <div style={{ marginBottom: 10 }}>
+                  <Icons.Target className="icon icon-xl" />
+                </div>
+                <div
+                  className="howto-title"
+                  style={{ fontSize: "1rem", marginBottom: 6 }}
+                >
+                  TODAY'S OBJECTIVE
+                </div>
+                <div className="howto-desc">
+                  Score 300 points in Rush mode without eating any Lightning
+                  food!
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="menu-btn primary"
+              onClick={() => {
+                setGameMode("rush");
+                startGame("rush");
+              }}
+            >
+              <Icons.Play className="icon" /> ACCEPT CHALLENGE
+            </button>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                audio.click();
+                setScreen("menu");
+              }}
+            >
+              <Icons.Home className="icon icon-sm" /> BACK
+            </button>
+          </div>
+        );
+
+        const renderScreen = () => {
+          switch (screen) {
+            case "menu":
+              return renderMenu();
+            case "modes":
+              return renderModes();
+            case "playing":
+              return renderPlaying();
+            case "gameover":
+              return renderGameOver();
+            case "highscores":
+              return renderHighScores();
+            case "howto":
+              return renderHowTo();
+            case "settings":
+              return renderSettings();
+            case "customize":
+              return renderCustomize();
+            case "achievements":
+              return renderAchievements();
+            case "daily":
+              return renderDaily();
+            default:
+              return renderMenu();
+          }
+        };
+
+        return (
+          <>
+            <div className="game-container">{renderScreen()}</div>
+
+            {achievementToast && (
+              <div className="achievement-toast">
+                <div className="achievement-icon">
+                  {achievementToast.Icon && (
+                    <achievementToast.Icon className="icon icon-lg" />
+                  )}
+                </div>
+                <div className="achievement-text">
+                  <div className="achievement-title">Achievement Unlocked!</div>
+                  <div className="achievement-name">
+                    {achievementToast.name}
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        );
+      }
+
+      const style = document.createElement("style");
+      style.textContent = `
+      @keyframes floatUp {
+        0% { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
+      }
+    `;
+      document.head.appendChild(style);
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
